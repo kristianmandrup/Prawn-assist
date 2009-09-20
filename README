@@ -37,8 +37,30 @@ The method takes Prawn PDF object to render on, a HTML string to use for renderi
 
 Requirements/Setup/Install:
 
+gems:
+- nokogiri
+- prawn
+
+plugins:
+- prawn::format
+
+sudo gem install nokigiri
+sudo gem install prawn
+
+http://github.com/jamis/prawn-format
+
 Rails
 =====
+
+Install prawn-format:
+http://github.com/jamis/prawn-format
+
+cd vendor/plugins
+git clone git://github.com/jamis/prawn-format.git 
+cd prawn-format
+rm -rf .git*
+
+
 environment.rb (or some other ruby file that is loaded when server starts)
 --------------
 ...
