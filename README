@@ -29,7 +29,7 @@ Requirements/Setup/Install:
 
 Rails
 =====
-environment.rb
+environment.rb (or some other ruby file that is loaded when server starts)
 --------------
 ...
 require 'prawn'
@@ -41,13 +41,14 @@ RAILS USAGE:
 ============
 
 Add MIMETYPE for 'application/pdf' in config/initializers/mime_types.rb:
-
+============
 config/initializers/mime_types.rb
 ----------------------------------
 Mime::Type.register "application/pdf", :pdf
 
-Setup controller to respond to and render pdf
 
+Setup controller to respond to and render pdf
+================
 /app/controllers
 
 {Model-plural}Controller.rb, fx UsersController
@@ -58,6 +59,9 @@ def index
     format.pdf { render :layout => false } # index.pdf.prawn
   end    
 end
+
+Setup view to render pdf when called by controller method
+==========
 
 /app/views/{model-plural}/ , fx /app/views/users
 
@@ -75,8 +79,8 @@ options = {:line_height => 12, :font_size => "1em", :table_font_size => "0.8em",
 
 Prawn::Assist::Generate.pdf(pdf, html_table, options)
 
-In browser:
------------
+Test in browser:
+================
 
 http://localhost:3000/{model-plural}.pdf
 
