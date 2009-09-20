@@ -8,7 +8,7 @@ module Prawn
   
       def self.pdf(pdf, html, options = {:ypos => 30})
         # parse
-        list = Prawn::Assist::Parse.html(html)
+        list = Prawn::Assist::Parse.html(html, options[:parse_options])
 
         # set options
         start_page_ypos = options[:start_page_ypos] || 30

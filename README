@@ -13,8 +13,18 @@ Prawn:Assist can handle the following HTML constructs:
 - Images
 - Paragraphs
 
-Discards block-tags (but retains innerHtml) of
-- div, span
+Strips tags (but retains innerHtml) of
+- 'span', 'div', 'body', 'html', 'form'
+
+Completely discards the following tags with all inner content
+- 'object', 'script', 'applet', 'select', 'button', 'input', 'textarea', 'style', 'iframe', 'meta', 'link'
+
+TODO:
+- definition lists
+- dl
+  - dt
+  - dfn
+  - dd
 
 This module will help in generating PDF content for more complex output, fx HTML from the MCE editor in 'simple' mode.
 
@@ -76,6 +86,8 @@ html_img = "<p> <i>Alphabet soup</i> <ul><li>a</li> <li><b>b</b></li></ul></p> <
 
 
 options = {:line_height => 12, :font_size => "1em", :table_font_size => "0.8em", :table_line_height => 23, :start_page_ypos => 24, :table_default_cell_width => 60}  
+
+parse_options = {:erase_tags => ['legend'], :strip_tags => ['dl']}
 
 Prawn::Assist::Generate.pdf(pdf, html_table, options)
 %>

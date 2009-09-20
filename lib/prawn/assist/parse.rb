@@ -13,6 +13,9 @@ module Prawn
       @@IMG_MARKER = "IMG"
       @@BREAK_MARKER = 'BREAK'
     
+      @@DEFAULT_STRIP_TAGS = ['span', 'div', 'body', 'html', 'form', 'head'] 
+      @@DEFAULT_ERASE_TAGS = ['object', 'script', 'applet', 'select', 'button', 'input', 'textarea', 'style', 'iframe', 'meta', 'link', 'hr']
+      @@H_TAGS = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9']
       # Usage:
       #
       # require 'nokogiri'
@@ -28,15 +31,92 @@ module Prawn
       #   pdf.text item
       # end
 
-      def self.html(html)
+      def self.html(html, options = {})
 
+        @@DEFAULT_ERASE_TAGS.each do |tag|
+          html.erase_tags!(tag)
+        end
+        
+        # handle custom erase tags         
+        if options[:erase_tags]
+          options[:erase_tags].each do |tag|
+            html.erase_tags!(tag)
+          end
+        end
+
+        # use strip_tag method!
+        @@DEFAULT_STRIP_TAGS.each do |tag|
+          html.strip_tags!(tag)
+        end
+
+        # handle custom strip tags 
+        if options[:strip_tags]
+          options[:strip_tags].each do |tag|
+            html.strip_tags!(tag)
+          end
+        end
+                
+        if options[:block_tags]
+          bltags = options[:block_tags]
+          if bltags.kind_of? String             
+            if htags == 'all'
+              @@BLOCK_TAGS.each do |tag|
+                html.add_after_end_tag!(tag, '<br/>')
+              end
+            end          
+            if bltags.include? '+'
+              bltags.sub!('+', '')
+              index = @@H_TAGS.index(bltags)
+              bltags = @@H_TAGS[index..-1]
+              bltags.each do |tag|
+                html.add_after_end_tag!(tag, '<br/>')
+              end                            
+            end
+          end
+          
+          if bltags.kind_of? Array 
+            bltags.each do |tag|
+              if tag.include? '+'
+                tag.sub!('+', '')
+                index = @@H_TAGS.index(tag)
+                tags = @@H_TAGS[index..-1]
+                tags.each do |tag2|
+                  html.add_after_end_tag!(tag2, '<br/>')
+                end                            
+              else
+                html.add_after_end_tag!(tag, '<br/>')
+              end                            
+            end
+          end
+        end
+        
+        if options[:strip_h_tags]
+          htags = options[:strip_h_tags]
+          if htags.kind_of? String             
+            if htags == 'all'
+              @@H_TAGS.each do |tag|
+                html.strip_tags!(tag)
+              end
+            end          
+            if htags.include? '+'
+              htags.sub!('+', '')
+              index = @@H_TAGS.index(htags)
+              htags = @@H_TAGS[index..-1]
+              htags.each do |tag|
+                html.strip_tags!(tag)
+              end                            
+            end
+          end        
+          if htags.kind_of? Array 
+            htags.each do |tag|
+              html.strip_tags!(tag)
+            end          
+          end
+        end
+        
         doc = Nokogiri::HTML.parse(html)
 
         result = html
-
-        # use strip_tag method!
-        result.strip_tags!('span')
-        result.strip_tags!('div')
 
         doc.css('ul').each do |ul|
           puts "parsing ul"

@@ -25,10 +25,18 @@ String.class_eval do
     self.sub!(/<#{tag}[^>]*>(.|\n)*?<\/#{tag}>/i, replace_str)
   end
 
+  def erase_tags!(tag)
+    self.replace_tags!(tag, '')
+  end
+
+  def add_after_end_tag!(tag, replace_str)
+    self.gsub!(/<\/#{tag}>/i, "\1#{replace_str}")    
+  end
+
   # encure matches newlines (any white-space!) between tag markers 
   def replace_tags!(tag, replace_str)
     self.gsub!(/<#{tag}[^>]*>(.|\n)*?<\/#{tag}>/i, replace_str)
-    self.gsub!(/<#{tag}\/>/i, replace_str)
+    self.gsub!(/<#{tag}[^>]*\/>/i, replace_str)
   end
 
   # encure matches newlines (any white-space!) between tag markers 
