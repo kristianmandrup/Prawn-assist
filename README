@@ -1,0 +1,92 @@
+Prawn:Assist
+============
+By Kristian Mandrup, kmandrup@gmail.com
+---------------------------------------
+
+Prawn:Assist is a module with some extensions for Prawn::format.
+
+Prawn:Assist can handle the following HTML constructs:
+- Lists
+  - unordered (<ul><li>...)
+  - ordered (<ol><li>..)
+- Tables
+- Images
+- Paragraphs
+
+Discards block-tags (but retains innerHtml) of
+- div, span
+
+This module will help in generating PDF content for more complex output, fx HTML from the MCE editor in 'simple' mode.
+
+The primary interface for Prawn:Assist is this class method:
+- Prawn::Assist::Generate.pdf(pdf, html_table, options)
+
+The method takes Prawn PDF object to render on, a HTML string to use for rendering and some rendering options. 
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+Requirements/Setup/Install:
+
+Rails
+=====
+environment.rb
+--------------
+...
+require 'prawn'
+require 'prawn/format'  
+require 'nokogiri'
+...
+
+RAILS USAGE:
+============
+
+Add MIMETYPE for 'application/pdf' in config/initializers/mime_types.rb:
+
+config/initializers/mime_types.rb
+----------------------------------
+Mime::Type.register "application/pdf", :pdf
+
+Setup controller to respond to and render pdf
+
+/app/controllers
+
+{Model-plural}Controller.rb, fx UsersController
+---------------
+def index
+  respond_to do |format|
+    format.html # index.rhtml
+    format.pdf { render :layout => false } # index.pdf.prawn
+  end    
+end
+
+/app/views/{model-plural}/ , fx /app/views/users
+
+index.pdf.prawn
+---------------
+
+html_img = "<p> <i>Alphabet soup</i> <ul><li>a</li> <li><b>b</b></li></ul></p> <span style='width:100'>hello</span>
+<img src='http://prawn.majesticseacreature.com/media/prawn_logo.png' width='100' height='100' nobreak='true'/> 
+<img src='http://prawn.majesticseacreature.com/media/prawn_logo.png' width='100' height='100' nobreak='true'/>
+<img src='http://prawn.majesticseacreature.com/media/prawn_logo.png' width='100' height='100'/>
+<p> <b>Numbered list</b> <ol> <li>Alpha</li> <li><i>Beta</i></li></ol> </p>"    
+
+
+options = {:line_height => 12, :font_size => "1em", :table_font_size => "0.8em", :table_line_height => 23, :start_page_ypos => 24, :table_default_cell_width => 60}  
+
+Prawn::Assist::Generate.pdf(pdf, html_table, options)
+
+In browser:
+-----------
+
+http://localhost:3000/{model-plural}.pdf
+
+Fx:
+
+http://localhost:3000/users.pdf
+
+
+
+
+
+
+

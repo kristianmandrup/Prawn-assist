@@ -1,0 +1,5 @@
+require 'prawn/assist/generate'
+require 'prawn/assist/parse'
+require 'prawn/assist/table'
+require 'prawn/assist/image'
+require 'prawn/assist/string'
