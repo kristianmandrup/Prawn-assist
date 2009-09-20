@@ -67,7 +67,7 @@ Setup view to render pdf when called by controller method
 
 index.pdf.prawn
 ---------------
-
+<%
 html_img = "<p> <i>Alphabet soup</i> <ul><li>a</li> <li><b>b</b></li></ul></p> <span style='width:100'>hello</span>
 <img src='http://prawn.majesticseacreature.com/media/prawn_logo.png' width='100' height='100' nobreak='true'/> 
 <img src='http://prawn.majesticseacreature.com/media/prawn_logo.png' width='100' height='100' nobreak='true'/>
@@ -78,6 +78,18 @@ html_img = "<p> <i>Alphabet soup</i> <ul><li>a</li> <li><b>b</b></li></ul></p> <
 options = {:line_height => 12, :font_size => "1em", :table_font_size => "0.8em", :table_line_height => 23, :start_page_ypos => 24, :table_default_cell_width => 60}  
 
 Prawn::Assist::Generate.pdf(pdf, html_table, options)
+%>
+OR using a partial for creating a pdf from existing view code:
+
+index.pdf.prawn
+---------------
+
+<% 
+html = render :partial => 'my_partial'
+
+# use default render options
+Prawn::Assist::Generate.pdf(pdf, html_table)
+%>
 
 Test in browser:
 ================
@@ -87,6 +99,7 @@ http://localhost:3000/{model-plural}.pdf
 Fx:
 
 http://localhost:3000/users.pdf
+
 
 
 
